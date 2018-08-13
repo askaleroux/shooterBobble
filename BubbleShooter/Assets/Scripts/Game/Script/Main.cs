@@ -1,5 +1,4 @@
-﻿using ICS;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,43 +9,53 @@ namespace Hanswu.bubble
 {
     public class Main : MonoBehaviour
     {
+        static Main _instance;
+
         void Start()
         {
-            GameObject.DontDestroyOnLoad(this.gameObject);
-            StartCoroutine(_Main());
+            if (_instance == null)
+            {
+                _instance = this;
+                DontDestroyOnLoad(this.gameObject);
+                StartCoroutine(_Main());
+            }
         }
 
         private static IEnumerator _Main()
         {
             var container = new DiContainer();
-            LevelSelectInfo levelSelectInfo = new LevelSelectInfo();
-            container.Bind<LevelSelectInfo>().FromInstance(levelSelectInfo);
-
-            while(true)
+            while (true)
             {
                 yield return _Metagame(container.CreateSubContainer());
                 yield return _GamePlay();
-                yield return _Summary();
             }
-
         }
 
         private static IEnumerator _Metagame(DiContainer container)
         {
+            var load = SceneManager.LoadSceneAsync("Metagame");
+            while(!load.isDone)
+            {
+                yield return null;
+            }
+
             GameObject.FindObjectOfType<MetagameInstaller>().Resolve(container);
+            LevelSelectInfo levelSelectInfo = new LevelSelectInfo();
+            container.Bind<LevelSelectInfo>().FromInstance(levelSelectInfo);
+
             var menuPresenter = container.Resolve<MenuPresenter>();
             yield return menuPresenter.Run();
         }
 
         private static IEnumerator _GamePlay()
         {
-
-            yield return null;
+            var load = SceneManager.LoadSceneAsync("GamePlay");
+            while (!load.isDone)
+            {
+                yield return null;
+            }
         }
 
-        private static IEnumerator _Summary()
-        {
-            yield return null;
-        }
+      
     }
 }

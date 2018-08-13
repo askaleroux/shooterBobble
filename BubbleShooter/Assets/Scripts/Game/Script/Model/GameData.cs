@@ -27,12 +27,4 @@ namespace Hanswu.bubble
     {
         string Name;
     }
-
-    public class GameData
-    {
-        
-
-
-
-    }
 }
