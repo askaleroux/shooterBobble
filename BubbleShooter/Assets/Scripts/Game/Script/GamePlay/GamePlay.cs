@@ -13,17 +13,24 @@ namespace Hanswu.bubble
 
     public class GamePlay : MonoBehaviour
     {
+        [SerializeField]
+        private GameObject _bubbleShooterGameManager;
+        [SerializeField]
+        private RectTransform _root;
+
+        private BubbleShooterGameManager _manager;
         private GameState _gameState;
 
         private void Start()
         {
-                
+            _InitializeGame();
         }
 
         private void _InitializeGame()
         {
             _gameState = GameState.Playing;
-
+            GameObject go = Instantiate(_bubbleShooterGameManager, _root);
+            _manager = go.GetComponent<BubbleShooterGameManager>();
         }
 
         private IEnumerator _Game()
