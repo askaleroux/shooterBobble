@@ -31,6 +31,8 @@ namespace Hanswu.bubble
             _gameState = GameState.Playing;
             GameObject go = Instantiate(_bubbleShooterGameManager, _root);
             _manager = go.GetComponent<BubbleShooterGameManager>();
+            _manager.Initialize(Difficulty.Easy);
+
         }
 
         private IEnumerator _Game()
