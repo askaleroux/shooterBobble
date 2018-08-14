@@ -21,7 +21,12 @@ namespace Hanswu.bubble
         [SerializeField]
         SpriteRenderer _bubbleSprite;
 
-        BubbleElement(Sprite sprite)
+        private BubbleMatrixGeoInfo _matrixGeoInfo;
+        private float _movingSpeed;
+        private float _isMoving;
+        private float _headingAngle;
+
+        BubbleElement(Sprite sprite,BubbleMatrixGeoInfo matrixGeoInfo)
         {
             _bubbleSprite.sprite = sprite;
         }

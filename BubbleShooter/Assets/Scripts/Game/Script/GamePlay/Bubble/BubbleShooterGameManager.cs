@@ -31,14 +31,16 @@ namespace Hanswu.bubble
         public void Initialize(Difficulty difficulty)
         {
             _bubbleMatrix = new BubbleMatrix(rows, columns);
-
+            
         }
 
-        
+
         private BubbleElement _CreateBubble()
         {
             return null;
         }
+
+       
 
     }
 
