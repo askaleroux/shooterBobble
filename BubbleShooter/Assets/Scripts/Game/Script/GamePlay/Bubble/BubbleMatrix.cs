@@ -7,12 +7,11 @@ namespace Hanswu.bubble
 
     public class BubbleMatrixGeoInfo
     {
-        /* Geometry */
         public float LeftBorder { get; private set; }
         public float RightBorder { get; private set; }
         public float TopBorder { get; private set; }
         public float Depth;
-        // Dimensions
+
         public int Rows { get; private set; }
         public int Columns { get; private set; }
         public float BubbleRadius { get; private set; }
@@ -30,7 +29,6 @@ namespace Hanswu.bubble
 
     public class BubbleMatrix : MonoBehaviour
     {
-
         private int _rows;
         private int _columns;
         private BubbleElement [,] _matrix;

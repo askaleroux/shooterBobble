@@ -21,14 +21,25 @@ namespace Hanswu.bubble
         [SerializeField]
         SpriteRenderer _bubbleSprite;
 
-        private BubbleMatrixGeoInfo _matrixGeoInfo;
         private float _movingSpeed;
-        private float _isMoving;
+        private bool _isMoving;
         private float _headingAngle;
 
-        BubbleElement(Sprite sprite,BubbleMatrixGeoInfo matrixGeoInfo)
+        BubbleElement()
+        {
+            
+        }
+
+        public void SetSprite(Sprite sprite)
         {
             _bubbleSprite.sprite = sprite;
+        }
+
+        public void SetBubbleStatus(bool isMoving,float angle,float speed)
+        {
+            _isMoving = isMoving;
+            _headingAngle = angle;
+            _movingSpeed = speed;
         }
     }
 }

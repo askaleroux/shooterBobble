@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Game/Scene/Metagame.unity
-  isLoaded: 0
-  isActive: 0
+- path: Assets/Scripts/Game/Scene/GamePlay.unity
+  isLoaded: 1
+  isActive: 1

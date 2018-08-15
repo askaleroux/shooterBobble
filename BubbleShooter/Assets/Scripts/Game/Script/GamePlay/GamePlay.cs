@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Hanswu.bubble
 {
-    enum GameState
+    public enum GameState
     {
         Playing,
         Win,
@@ -19,20 +19,23 @@ namespace Hanswu.bubble
         private RectTransform _root;
 
         private BubbleShooterGameManager _manager;
-        private GameState _gameState;
+        public GameState _gameState;
+
 
         private void Start()
         {
             _InitializeGame();
+            StartCoroutine(_Game());
         }
 
         private void _InitializeGame()
         {
             _gameState = GameState.Playing;
             GameObject go = Instantiate(_bubbleShooterGameManager, _root);
+            go.SetActive(true);
             _manager = go.GetComponent<BubbleShooterGameManager>();
             _manager.Initialize(Difficulty.Easy);
-
+            _manager.OnChangeGameState += _OnChangeGameState;
         }
 
         private IEnumerator _Game()
@@ -41,6 +44,11 @@ namespace Hanswu.bubble
             {
                 yield return null;
             }
+        }
+
+        private void _OnChangeGameState(GameState state)
+        {
+            _gameState = state;
         }
 
     }
