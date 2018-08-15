@@ -10,21 +10,14 @@ public class BubbleShooter : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.A))
+        if(Input.GetKey(KeyCode.A))
         {
-            transform.Rotate(this.transform.position,ROTATE_SPEED * Time.deltaTime);
-            if (transform.eulerAngles.z > LEFT_MAX_ANGLE && transform.eulerAngles.z < 180.0)
-            {
-                transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, LEFT_MAX_ANGLE);
-            }
+            transform.Rotate(Vector3.back * ROTATE_SPEED * Time.deltaTime*-1);
         }
-        if(Input.GetKeyDown(KeyCode.D))
+        if(Input.GetKey(KeyCode.D))
         {
-            transform.Rotate(this.transform.position, ROTATE_SPEED * Time.deltaTime);
-            if (transform.eulerAngles.z < RIGHT_MAX_ANGLE && transform.eulerAngles.z > 180.0)
-            {
-                transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, RIGHT_MAX_ANGLE);
-            }
+            transform.Rotate(Vector3.back * ROTATE_SPEED * Time.deltaTime);
+
         }
     }
 }
