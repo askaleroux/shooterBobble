@@ -30,7 +30,6 @@ namespace Hanswu.bubble
 
         private BubbleElement _currentBubble;
         private BubbleElement _nextBubble;
-        private BubbleMatrix _bubbleMatrix;
         private BubbleMatrixGeoInfo _geoInfo;
         private BubbleMatrixManager _gameManager;
         private List<BubbleElement> _controlledBubbles = new List<BubbleElement>();
@@ -49,9 +48,8 @@ namespace Hanswu.bubble
 
         public void Initialize(Difficulty difficulty)
         {
-            _bubbleMatrix = new BubbleMatrix(_rows, _columns);
             _geoInfo = new BubbleMatrixGeoInfo(_leftBorder, _rightBorder, _topBorder, _rows, _columns, _bubbleRadius);
-            _gameManager = BubbleMatrixManager.GetInstance(_bubbleMatrix, _geoInfo, difficulty);
+            _gameManager = BubbleMatrixManager.GetInstance(_rows,_columns, _geoInfo, difficulty);
             _currentBubble = _CreateBubble(_currentBubbleRoot, CURRENT_BUBBLE_SCALE);
             _nextBubble = _CreateBubble(_nextBubbleRoot,NEXT_BUBBLE_SCALE);
         }
@@ -79,26 +77,28 @@ namespace Hanswu.bubble
         public void AddNewRowToMatrix()
         {
             //this._pendingToAddRow = false;
-			//bool overflows = this._matrix.shiftOneRow();
+			bool overflows = _gameManager.GetBubbleMatrix().ShiftOneRow();
 			
 			for (int i = 0; i<this._geoInfo.Columns; i++)
             {
 				BubbleElement bubble = _CreateBubble(_bubbleContainer.transform,CURRENT_BUBBLE_SCALE);
                 bubble.IsMoving = false;
-				_bubbleMatrix.AddBubble(bubble, 0,i);
+				_gameManager.GetBubbleMatrix().AddBubble(bubble, 0,i);
 			}
 			
-			foreach (var bubble in _ ){
-				if (bubbleController != this._currentBubble){
-					Vector3 position = BubbleMatrixControllerHelper.PositionForCell(this._matrix.location(bubbleController.bubble), geometry, this._matrix.isBaselineAlignedLeft);
-					//bubbleController.moveTo(position, this._shiftAnimationDuration);				
-					bubbleController.transform.position = position;
+			foreach (var bubble in _controlledBubbles )
+            {
+				if (bubble != this._currentBubble)
+                {
+					Vector3 position = _gameManager.GetPositionFromCellCoord(_gameManager.GetBubbleMatrix().GetBubbleLocation(bubble));		
+					bubble.transform.position = position;
 				}
 				
 			}
 			
-			if (overflows){
-				this.FinishGame(GameState.Loose);
+			if (overflows)
+            {
+                OnChangeGameState(GameState.Loose);
 				return;
 			}
         }

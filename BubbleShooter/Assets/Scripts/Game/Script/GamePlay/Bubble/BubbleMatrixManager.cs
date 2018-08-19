@@ -8,28 +8,21 @@ namespace Hanswu.bubble
     {
         private static BubbleMatrixManager _instance;
         private BubbleMatrixGeoInfo _geoInfo;
-        private BubbleMatrix _matrix;
         private Difficulty _diffculty;
 
-        public static BubbleMatrixManager GetInstance(BubbleMatrix matrix, BubbleMatrixGeoInfo geoInfo,Difficulty difficulty)
+        public static BubbleMatrixManager GetInstance(BubbleMatrixGeoInfo geoInfo,Difficulty difficulty)
         {
             if (_instance == null)
             {
-                _instance = new BubbleMatrixManager(matrix, geoInfo, difficulty);
+                _instance = new BubbleMatrixManager(geoInfo, difficulty);
             }
             return _instance;  
         }
 
-        private BubbleMatrixManager(BubbleMatrix matrix, BubbleMatrixGeoInfo geoInfo,Difficulty difficulty)
+        private BubbleMatrixManager(BubbleMatrixGeoInfo geoInfo,Difficulty difficulty)
         {
-            _matrix = matrix;
             _geoInfo = geoInfo;
             _diffculty = difficulty;
-        }
-
-        public BubbleMatrix GetBubbleMatrix()
-        {
-            return _matrix;
         }
 
         public BubbleMatrixGeoInfo GetBubbleMatrixGeoInfo()
@@ -152,11 +145,6 @@ namespace Hanswu.bubble
 
             //// Prepare the new bubble to shoot it
             //this._currentBubble = this.createBubble();
-        }
-
-        private BubbleElement _CreateBubble()
-        {
-            return null;
         }
     }
 }

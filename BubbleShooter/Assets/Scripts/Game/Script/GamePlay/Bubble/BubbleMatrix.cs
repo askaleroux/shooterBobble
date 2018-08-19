@@ -71,5 +71,45 @@ namespace Hanswu.bubble
         {
             _isTopRowAlignedToLeft = isAligned;
         }      
+
+        public Vector2 GetBubbleLocation(BubbleElement bubble)
+        {
+            for (int i = 0 ; i< this._rows; i++)
+			{
+				for (int j = 0; j< this._columns; j++)
+                {
+					BubbleElement someBubble = _matrix[i,j];
+					if (bubble == someBubble)
+                    {
+						return new Vector2(i, j);
+					}
+				}				
+			}
+			return new Vector2(-1,-1);
+        }
+
+        public bool ShiftOneRow()
+		{
+			bool overflows = false;
+			for (int i = this._rows -1; i >= 0; i--)
+			{
+				for (int j = 0; j < this._columns; j++)
+				{
+					if (_matrix[i,j] != null)
+					{
+						if (i >= this._rows -1)
+						{
+							overflows = true;
+						}else					
+						{
+							_matrix[i+1,j] = _matrix[i,j];
+							_matrix[i,j] = null;
+						}
+					}
+				}
+			}
+			_isTopRowAlignedToLeft = !_isTopRowAlignedToLeft;
+			return overflows;
+		}
     }
 }
