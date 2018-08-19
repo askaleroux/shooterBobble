@@ -22,7 +22,7 @@ namespace Hanswu.bubble
         SpriteRenderer _bubbleSprite;
 
         private float _movingSpeed;
-        private bool _isMoving;
+        public bool IsMoving;
         private float _headingAngle;
 
         BubbleElement()
@@ -35,9 +35,8 @@ namespace Hanswu.bubble
             _bubbleSprite.sprite = sprite;
         }
 
-        public void SetBubbleStatus(bool isMoving,float angle,float speed)
+        public void SetShootingBubbleStatus(float angle,float speed)
         {
-            _isMoving = isMoving;
             _headingAngle = angle;
             _movingSpeed = speed;
         }

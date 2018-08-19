@@ -56,7 +56,7 @@ namespace Hanswu.bubble
             _nextBubble = _CreateBubble(_nextBubbleRoot,NEXT_BUBBLE_SCALE);
         }
 
-        private BubbleElement _CreateBubble(RectTransform root,Vector3 scale)
+        private BubbleElement _CreateBubble(Transform root,Vector3 scale)
         {
             var bubbleGo = Instantiate(_bubblePrefab, root);
             bubbleGo.transform.SetAsLastSibling();
@@ -64,6 +64,7 @@ namespace Hanswu.bubble
             var bubbleElement = bubbleGo.GetComponent<BubbleElement>();
             var colorIndex = UnityEngine.Random.Range(0, Enum.GetNames(typeof(BubbleColor)).Length);
             bubbleElement.SetSprite(_bubbleSprites[colorIndex]);
+            _controlledBubbles.Add(bubbleElement);
             return bubbleElement;
         }
 
@@ -74,6 +75,34 @@ namespace Hanswu.bubble
                
             }
         }
+
+        public void AddNewRowToMatrix()
+        {
+            //this._pendingToAddRow = false;
+			//bool overflows = this._matrix.shiftOneRow();
+			
+			for (int i = 0; i<this._geoInfo.Columns; i++)
+            {
+				BubbleElement bubble = _CreateBubble(_bubbleContainer.transform,CURRENT_BUBBLE_SCALE);
+                bubble.IsMoving = false;
+				_bubbleMatrix.AddBubble(bubble, 0,i);
+			}
+			
+			foreach (var bubble in _ ){
+				if (bubbleController != this._currentBubble){
+					Vector3 position = BubbleMatrixControllerHelper.PositionForCell(this._matrix.location(bubbleController.bubble), geometry, this._matrix.isBaselineAlignedLeft);
+					//bubbleController.moveTo(position, this._shiftAnimationDuration);				
+					bubbleController.transform.position = position;
+				}
+				
+			}
+			
+			if (overflows){
+				this.FinishGame(GameState.Loose);
+				return;
+			}
+        }
+
 
         private void _GetShooterAngle()
         {

@@ -4,8 +4,7 @@ using UnityEngine;
 
 namespace Hanswu.bubble
 {
-
-    public class BubbleMatrixGeoInfo
+   public class BubbleMatrixGeoInfo
     {
         public float LeftBorder { get; private set; }
         public float RightBorder { get; private set; }
@@ -26,7 +25,6 @@ namespace Hanswu.bubble
             BubbleRadius = bubbleRadius;
         }
     }
-
     public class BubbleMatrix : MonoBehaviour
     {
         public bool IsTopRowAlignedToLeft
@@ -53,15 +51,20 @@ namespace Hanswu.bubble
             _columns = columns;
             _matrix = new BubbleElement[rows, columns];
         }
-
-        public void AddBubble()
-        {
-
+        public void AddBubble(BubbleElement bubble,int x,int y)
+        {   
+            if (x < 0 || x > this._rows -1 || y < 0 || y > this._columns -1)
+				throw new System.ArgumentException("Adding Bubble to wrong coordinates");
+			
+			_matrix[x,y] = bubble;
         }
 
-        public void RemoveBubble()
+        public void RemoveBubble(BubbleElement bubble,int x,int y)
         {
+            if (x < 0 || x > this._rows -1 || y < 0 || y > this._columns -1)
+                    throw new System.ArgumentException("Removing Bubble from wrong coordinates");	
 
+			_matrix[x,y] = null;
         }          
 
         public void SetTopRowAligned(bool isAligned)
