@@ -42,14 +42,51 @@ namespace Hanswu.bubble
             return true;
         }
 
-        public Vector3 GetPositionFromCellCoord()
+        public Vector3 GetPositionFromCellCoord(Vector2 cell)
         {
-            return Vector3.one;
+            bool rowIsEven = cell.x % 2 == 0;
+			float y = _geoInfo.Rows - cell.x - _geoInfo.BubbleRadius;
+			float x;
+			if (_matrix.IsTopRowAlignedToLeft)
+            {
+				if (rowIsEven)
+                {
+					x = cell.y + _geoInfo.BubbleRadius;
+				}
+                else
+                {
+					x = cell.y +  2 * _geoInfo.BubbleRadius;
+				}
+			}
+            else
+            {
+				if (rowIsEven)
+                {
+					x = cell.y +  2 * _geoInfo.BubbleRadius;
+				}
+                else
+                {
+					x = cell.y + _geoInfo.BubbleRadius;
+				}
+			}
+			return new Vector3(x, y, _geoInfo.Depth);
         }
 
-        public Vector2 GetCellCoordFromPosition()
+        public Vector2 GetCellCoordFromPosition(Vector3 position)
         {
-            return Vector2.one;
+            int row = _geoInfo.Rows - Mathf.FloorToInt(position.y) - 1;
+			int column;
+			bool rowIsEven = row% 2 == 0;
+			if ((rowIsEven && _matrix.IsTopRowAlignedToLeft) || (!rowIsEven  && !_matrix.IsTopRowAlignedToLeft))
+            {
+				column = Mathf.FloorToInt(position.x);
+			}
+            else
+            {
+				column = Mathf.FloorToInt(position.x - _geoInfo.BubbleRadius);
+			}
+			Vector2 result =  new Vector2(row, Mathf.Clamp(column, 0, _geoInfo.Columns -1));
+			return result;
         }
 
         public void HandleBubbleCollision()

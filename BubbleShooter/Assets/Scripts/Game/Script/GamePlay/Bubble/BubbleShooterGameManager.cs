@@ -69,7 +69,7 @@ namespace Hanswu.bubble
 
         private void Update()
         {
-            if((Input.GetMouseButtonDown(0)||Input.GetKeyDown(KeyCode.Space))&& !isGameFinished)
+            if((Input.GetKeyDown(KeyCode.Space))&& !isGameFinished)
             {
                
             }

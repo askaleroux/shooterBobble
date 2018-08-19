@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BubbleShooter : MonoBehaviour
 {
-    private const float ROTATE_SPEED = 90f;
+    private const float ROTATE_SPEED = 95f;
 
     private void Update()
     {
@@ -21,15 +21,15 @@ public class BubbleShooter : MonoBehaviour
         }
 
 
-        if (currentRotation.z > 65.0f && currentRotation.z < 180.0f)
+        if (currentRotation.z > 65.1 && currentRotation.z < 180.0f)
         {
-            currentRotation.z = 65.0f;
+            currentRotation.z = 65f;
             transform.localRotation = Quaternion.Euler(currentRotation);
         }
 
-        else if(currentRotation.z<295.0 && currentRotation.z >180.0f)
+        else if(currentRotation.z<285 && currentRotation.z >180.0f)
         {
-            currentRotation.z = 295.0f;
+            currentRotation.z = 285f;
             transform.localRotation = Quaternion.Euler(currentRotation);
         }
     }

@@ -29,9 +29,23 @@ namespace Hanswu.bubble
 
     public class BubbleMatrix : MonoBehaviour
     {
+        public bool IsTopRowAlignedToLeft
+        {
+            get
+            {
+                return _isTopRowAlignedToLeft;    
+            }
+            private set
+            {
+                _isTopRowAlignedToLeft = value;
+            }
+
+        }
+
         private int _rows;
         private int _columns;
         private BubbleElement [,] _matrix;
+        private bool _isTopRowAlignedToLeft = false;
 
         public BubbleMatrix(int rows,int columns)
         {
@@ -48,8 +62,11 @@ namespace Hanswu.bubble
         public void RemoveBubble()
         {
 
-        }
+        }          
 
-        
+        public void SetTopRowAligned(bool isAligned)
+        {
+            _isTopRowAlignedToLeft = isAligned;
+        }      
     }
 }
