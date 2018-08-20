@@ -24,6 +24,9 @@ namespace Hanswu.bubble
         [SerializeField]
         private RectTransform _nextBubbleRoot;
 
+        [SerializeField]
+        private GameObject _shooterGameobject;
+
 
         private readonly Vector3 CURRENT_BUBBLE_SCALE = new Vector3(0.85f, 0.85f, 1f);
         private readonly Vector3 NEXT_BUBBLE_SCALE = new Vector3(0.65f, 0.65f, 1f);
@@ -35,7 +38,7 @@ namespace Hanswu.bubble
         private List<BubbleElement> _controlledBubbles = new List<BubbleElement>();
         private bool isGameFinished;
 
-        private int _rows = 1;
+        private int _rows = 4;
         private int _columns = 8;
 
         private float _leftBorder = -2.04f;
@@ -64,7 +67,7 @@ namespace Hanswu.bubble
             var bubbleGo = Instantiate(_bubblePrefab, root);
             bubbleGo.transform.SetAsLastSibling();
             bubbleGo.transform.localScale = scale;
-           var bubbleElement = bubbleGo.GetComponent<BubbleElement>();
+            var bubbleElement = bubbleGo.GetComponent<BubbleElement>();
             var colorIndex = UnityEngine.Random.Range(0, Enum.GetNames(typeof(BubbleColor)).Length);
             bubbleElement.SetSprite(_bubbleSprites[colorIndex]);
             _controlledBubbles.Add(bubbleElement);
@@ -75,13 +78,18 @@ namespace Hanswu.bubble
         {
             if((Input.GetKeyDown(KeyCode.Space))&& !isGameFinished)
             {
-               
+                _currentBubble.GetComponent<Rigidbody>().isKinematic = false;
+                _currentBubble.IsMoving = true;
+                _currentBubble.SetShootingBubbleStatus(_GetShootingAngle(), 5f);
+                _nextBubble.transform.position = _currentBubble.transform.position;
+                _nextBubble.transform.localScale = CURRENT_BUBBLE_SCALE;
+                _currentBubble = _nextBubble;
+                _nextBubble = _CreateBubble(_nextBubbleRoot, CURRENT_BUBBLE_SCALE);
             }
         }
 
         public void AddNewRowToMatrix()
         {
-            //this._pendingToAddRow = false;
 			bool overflows = _gameManager.GetBubbleMatrix().ShiftOneRow();
 			
 			for (int i = 0; i<this._geoInfo.Columns; i++)
@@ -98,7 +106,6 @@ namespace Hanswu.bubble
 					Vector3 position = _gameManager.GetPositionFromCellCoord(_gameManager.GetBubbleMatrix().GetBubbleLocation(bubble));		
 					bubble.transform.localPosition = position;
 				}
-				
 			}
 			
 			if (overflows)
@@ -108,12 +115,31 @@ namespace Hanswu.bubble
 			}
         }
 
-
-        private void _GetShooterAngle()
+        private float _GetShootingAngle()
         {
+            float shooterRotation = _shooterGameobject.transform.eulerAngles.z;
 
+            float ballRotation = 90;
+            if (shooterRotation <= 360 && shooterRotation >= 270.0)
+            {
+                ballRotation = shooterRotation - 270;
+            }
+            if (shooterRotation <= 90 && shooterRotation >= 0)
+            {
+                ballRotation = 90 + shooterRotation;
+            }
 
+            return ballRotation;
+        }
 
+        private bool _CanMoveToPosition(Vector3 position)
+        {
+            Vector2 location = _gameManager.GetCellCoordFromPosition(position);
+            if ((int)location.x <= _geoInfo.Rows - 1)
+            {
+                return !_gameManager.GetBubbleMatrix().HasBubble((int)location.x, (int)location.y);
+            }
+            return true;
         }
 
     }

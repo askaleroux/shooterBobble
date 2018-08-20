@@ -46,30 +46,16 @@ namespace Hanswu.bubble
         public Vector3 GetPositionFromCellCoord(Vector2 cell)
         {
             bool rowIsEven = cell.x % 2 == 0;
-			float y = _geoInfo.TopBorder - cell.x*_geoInfo.BubbleRadius*2;
+			float y = (float)(_geoInfo.TopBorder - cell.x*_geoInfo.BubbleRadius*1.8);
             float x = _geoInfo.LeftBorder + cell.y*_geoInfo.BubbleRadius*2 ;
-            //if (_matrix.IsTopRowAlignedToLeft)
-            //{
-            //    if (rowIsEven)
-            //    {
-            //        x = cell.y + _geoInfo.BubbleRadius;
-            //    }
-            //    else
-            //    {
-            //        x = cell.y + 2 * _geoInfo.BubbleRadius;
-            //    }
-            //}
-            //else
-            //{
-            //    if (rowIsEven)
-            //    {
-            //        x = cell.y + 2 * _geoInfo.BubbleRadius;
-            //    }
-            //    else
-            //    {
-            //        x = cell.y + _geoInfo.BubbleRadius;
-            //    }
-            //}
+
+            var offset = (float) (1* _geoInfo.BubbleRadius);
+
+            if(rowIsEven)
+            {
+               x += offset;  
+            }
+
             return new Vector3(x, y, _geoInfo.Depth);
         }
 

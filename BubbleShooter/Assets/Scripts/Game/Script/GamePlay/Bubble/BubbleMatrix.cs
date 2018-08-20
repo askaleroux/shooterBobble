@@ -51,6 +51,12 @@ namespace Hanswu.bubble
             _columns = columns;
             _matrix = new BubbleElement[rows, columns];
         }
+
+        public BubbleElement GetBubble(int x,int y)
+        {
+            return _matrix[x,y];
+        }
+
         public void AddBubble(BubbleElement bubble,int x,int y)
         {   
             if (x < 0 || x > this._rows -1 || y < 0 || y > this._columns -1)
@@ -111,5 +117,10 @@ namespace Hanswu.bubble
 			_isTopRowAlignedToLeft = !_isTopRowAlignedToLeft;
 			return overflows;
 		}
+
+        public bool HasBubble(int x, int y)
+        {
+            return GetBubble(x,y)!= null;
+        }
     }
 }
