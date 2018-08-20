@@ -7,9 +7,9 @@ namespace com.javierquevedo{
 	
 	public class BubbleMatrixController : MonoBehaviour {
 		// Geometry */
-		public float leftBorder = 0.0f;
-		public float rightBorder = 10.5f;
-		public float topBorder = 10.0f;
+		public float leftBorder = -2.04f;
+		public float rightBorder = 2.04f;
+		public float topBorder = 2.95f;
 		
 		// Dimensions
 		public int rows = 10;

@@ -8,21 +8,29 @@ namespace Hanswu.bubble
     {
         private static BubbleMatrixManager _instance;
         private BubbleMatrixGeoInfo _geoInfo;
+        private BubbleMatrix _matrix;
         private Difficulty _diffculty;
 
-        public static BubbleMatrixManager GetInstance(BubbleMatrixGeoInfo geoInfo,Difficulty difficulty)
+        public static BubbleMatrixManager GetInstance(int rows,int columns,BubbleMatrixGeoInfo geoInfo,Difficulty difficulty)
         {
             if (_instance == null)
             {
-                _instance = new BubbleMatrixManager(geoInfo, difficulty);
+                var matrix = new BubbleMatrix(rows, columns);
+                _instance = new BubbleMatrixManager(matrix,geoInfo, difficulty);
             }
             return _instance;  
         }
 
-        private BubbleMatrixManager(BubbleMatrixGeoInfo geoInfo,Difficulty difficulty)
+        private BubbleMatrixManager(BubbleMatrix matrix, BubbleMatrixGeoInfo geoInfo,Difficulty difficulty)
         {
+            _matrix = matrix;
             _geoInfo = geoInfo;
             _diffculty = difficulty;
+        }
+
+        public BubbleMatrix GetBubbleMatrix()
+        {
+            return _matrix;
         }
 
         public BubbleMatrixGeoInfo GetBubbleMatrixGeoInfo()
@@ -38,31 +46,31 @@ namespace Hanswu.bubble
         public Vector3 GetPositionFromCellCoord(Vector2 cell)
         {
             bool rowIsEven = cell.x % 2 == 0;
-			float y = _geoInfo.Rows - cell.x - _geoInfo.BubbleRadius;
-			float x;
-			if (_matrix.IsTopRowAlignedToLeft)
-            {
-				if (rowIsEven)
-                {
-					x = cell.y + _geoInfo.BubbleRadius;
-				}
-                else
-                {
-					x = cell.y +  2 * _geoInfo.BubbleRadius;
-				}
-			}
-            else
-            {
-				if (rowIsEven)
-                {
-					x = cell.y +  2 * _geoInfo.BubbleRadius;
-				}
-                else
-                {
-					x = cell.y + _geoInfo.BubbleRadius;
-				}
-			}
-			return new Vector3(x, y, _geoInfo.Depth);
+			float y = _geoInfo.TopBorder - cell.x*_geoInfo.BubbleRadius*2;
+            float x = _geoInfo.LeftBorder + cell.y*_geoInfo.BubbleRadius*2 ;
+            //if (_matrix.IsTopRowAlignedToLeft)
+            //{
+            //    if (rowIsEven)
+            //    {
+            //        x = cell.y + _geoInfo.BubbleRadius;
+            //    }
+            //    else
+            //    {
+            //        x = cell.y + 2 * _geoInfo.BubbleRadius;
+            //    }
+            //}
+            //else
+            //{
+            //    if (rowIsEven)
+            //    {
+            //        x = cell.y + 2 * _geoInfo.BubbleRadius;
+            //    }
+            //    else
+            //    {
+            //        x = cell.y + _geoInfo.BubbleRadius;
+            //    }
+            //}
+            return new Vector3(x, y, _geoInfo.Depth);
         }
 
         public Vector2 GetCellCoordFromPosition(Vector3 position)

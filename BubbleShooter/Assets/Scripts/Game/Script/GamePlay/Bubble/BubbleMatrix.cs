@@ -9,7 +9,7 @@ namespace Hanswu.bubble
         public float LeftBorder { get; private set; }
         public float RightBorder { get; private set; }
         public float TopBorder { get; private set; }
-        public float Depth;
+        public float Depth=-5;
 
         public int Rows { get; private set; }
         public int Columns { get; private set; }

@@ -25,8 +25,8 @@ namespace Hanswu.bubble
         private RectTransform _nextBubbleRoot;
 
 
-        private readonly Vector3 CURRENT_BUBBLE_SCALE = new Vector3(0.8f, 0.8f, 0.8f);
-        private readonly Vector3 NEXT_BUBBLE_SCALE = new Vector3(0.65f, 0.65f, 0.65f);
+        private readonly Vector3 CURRENT_BUBBLE_SCALE = new Vector3(0.85f, 0.85f, 1f);
+        private readonly Vector3 NEXT_BUBBLE_SCALE = new Vector3(0.65f, 0.65f, 1f);
 
         private BubbleElement _currentBubble;
         private BubbleElement _nextBubble;
@@ -35,14 +35,14 @@ namespace Hanswu.bubble
         private List<BubbleElement> _controlledBubbles = new List<BubbleElement>();
         private bool isGameFinished;
 
-        private int _rows = 10;
-        private int _columns = 10;
+        private int _rows = 1;
+        private int _columns = 8;
 
-        private float _leftBorder = 0.0f;
-        private float _rightBorder = 10.5f;
-        private float _topBorder = 10.0f;
+        private float _leftBorder = -2.04f;
+        private float _rightBorder = 2.04f;
+        private float _topBorder = 2.95f;
 
-        private float _bubbleRadius = 0.5f;
+        private float _bubbleRadius = 0.255f;
         private float _addRowPeriod = 10.0f;
 
 
@@ -52,6 +52,11 @@ namespace Hanswu.bubble
             _gameManager = BubbleMatrixManager.GetInstance(_rows,_columns, _geoInfo, difficulty);
             _currentBubble = _CreateBubble(_currentBubbleRoot, CURRENT_BUBBLE_SCALE);
             _nextBubble = _CreateBubble(_nextBubbleRoot,NEXT_BUBBLE_SCALE);
+
+            for(int i =0;i<_rows;++i)
+            {
+                AddNewRowToMatrix();
+            }
         }
 
         private BubbleElement _CreateBubble(Transform root,Vector3 scale)
@@ -59,7 +64,7 @@ namespace Hanswu.bubble
             var bubbleGo = Instantiate(_bubblePrefab, root);
             bubbleGo.transform.SetAsLastSibling();
             bubbleGo.transform.localScale = scale;
-            var bubbleElement = bubbleGo.GetComponent<BubbleElement>();
+           var bubbleElement = bubbleGo.GetComponent<BubbleElement>();
             var colorIndex = UnityEngine.Random.Range(0, Enum.GetNames(typeof(BubbleColor)).Length);
             bubbleElement.SetSprite(_bubbleSprites[colorIndex]);
             _controlledBubbles.Add(bubbleElement);
@@ -88,10 +93,10 @@ namespace Hanswu.bubble
 			
 			foreach (var bubble in _controlledBubbles )
             {
-				if (bubble != this._currentBubble)
+				if (bubble != _currentBubble && bubble!=_nextBubble)
                 {
 					Vector3 position = _gameManager.GetPositionFromCellCoord(_gameManager.GetBubbleMatrix().GetBubbleLocation(bubble));		
-					bubble.transform.position = position;
+					bubble.transform.localPosition = position;
 				}
 				
 			}
