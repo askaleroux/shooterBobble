@@ -19,30 +19,42 @@ namespace Hanswu.bubble
 
     public class BubbleElement : MonoBehaviour
     {
-        public event Func<Vector3,bool> OnDetectMotionStop;
         public event Action<GameObject> OnCollisionStart;
+        public event Action OnBubbleArrived;
 
         [SerializeField]
         SpriteRenderer _bubbleSprite;
 
-        private float _movingSpeed;
         public bool IsMoving;
+        private float _movingSpeed;
         private float _headingAngle;
+        private const float FORCE = 20;
 
         BubbleElement()
         {
             
         }
 
-        void OnTriggerEnter(Collider collider)
+        private void OnCollisionEnter(Collision collision)
         {
-            if (IsMoving)
+            if(collision.gameObject.tag == "Border"&&IsMoving)
             {
+                var rigobody =  this.GetComponent<Rigidbody>();
+                var oldVelocity = rigobody.velocity;
+                ContactPoint contact = collision.contacts[0];
+                Vector3 reflectedVelocity = Vector3.Reflect(oldVelocity, contact.normal);
+                rigobody.velocity = reflectedVelocity;
+                Quaternion rotation = Quaternion.FromToRotation(oldVelocity, reflectedVelocity);
+                transform.rotation = rotation * transform.rotation;
+            }
+
+            if (collision.gameObject.tag == "TargetBubble"&&IsMoving)
+            {
+                var rigobody = this.GetComponent<Rigidbody>();
+                rigobody.velocity = Vector3.zero;
+                OnBubbleArrived();
                 IsMoving = false;
-                if (OnCollisionStart != null)
-                {
-                    OnCollisionStart(this.gameObject);
-                }
+                gameObject.tag = "TargetBubble";
             }
         }
 
@@ -50,25 +62,12 @@ namespace Hanswu.bubble
         {
             if (IsMoving)
             {
-                this.transform.Translate(Vector3.right * this._movingSpeed * Mathf.Cos(Mathf.Deg2Rad * _headingAngle) * Time.deltaTime);
-                this.transform.Translate(Vector3.up * this._movingSpeed * Mathf.Sin(Mathf.Deg2Rad * _headingAngle) * Time.deltaTime);
-                if (OnDetectMotionStop != null)
-                {
-                    if(!OnDetectMotionStop(transform.position))
-                    {
-                        transform.Translate(Vector3.left * _movingSpeed * Mathf.Cos(Mathf.Deg2Rad * _headingAngle) * Time.deltaTime);
-                        transform.Translate(Vector3.down * _movingSpeed * Mathf.Sin(Mathf.Deg2Rad * _headingAngle) * Time.deltaTime);
-                        IsMoving = false;
-                        if(OnCollisionStart!=null)
-                        {
-                            OnCollisionStart(gameObject);
-                        }
-                    }
-                    else
-                    {
-                        _UpdateDirection();
-                    }
-                }
+                Vector3 dir = Quaternion.AngleAxis(_headingAngle, Vector3.forward) * Vector3.right;
+                GetComponent<Rigidbody>().AddForce(dir* FORCE);
+            }
+            else
+            {
+                GetComponent<Rigidbody>().velocity = Vector3.zero;
             }
         }
 

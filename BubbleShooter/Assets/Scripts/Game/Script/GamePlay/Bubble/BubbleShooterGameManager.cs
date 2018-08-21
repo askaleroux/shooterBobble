@@ -36,7 +36,8 @@ namespace Hanswu.bubble
         private BubbleMatrixGeoInfo _geoInfo;
         private BubbleMatrixManager _gameManager;
         private List<BubbleElement> _controlledBubbles = new List<BubbleElement>();
-        private bool isGameFinished;
+        private bool _isGameFinished = false;
+        private bool _isShootingBubbleArrived = false;
 
         private int _rows = 4;
         private int _columns = 8;
@@ -53,8 +54,8 @@ namespace Hanswu.bubble
         {
             _geoInfo = new BubbleMatrixGeoInfo(_leftBorder, _rightBorder, _topBorder, _rows, _columns, _bubbleRadius);
             _gameManager = BubbleMatrixManager.GetInstance(_rows,_columns, _geoInfo, difficulty);
-            _currentBubble = _CreateBubble(_currentBubbleRoot, CURRENT_BUBBLE_SCALE);
-            _nextBubble = _CreateBubble(_nextBubbleRoot,NEXT_BUBBLE_SCALE);
+            _currentBubble = _CreateBubble(_currentBubbleRoot, CURRENT_BUBBLE_SCALE,false);
+            _nextBubble = _CreateBubble(_nextBubbleRoot,NEXT_BUBBLE_SCALE,false);
 
             for(int i =0;i<_rows;++i)
             {
@@ -62,30 +63,41 @@ namespace Hanswu.bubble
             }
         }
 
-        private BubbleElement _CreateBubble(Transform root,Vector3 scale)
+        private BubbleElement _CreateBubble(Transform root,Vector3 scale,bool isTargetBubble)
         {
             var bubbleGo = Instantiate(_bubblePrefab, root);
             bubbleGo.transform.SetAsLastSibling();
             bubbleGo.transform.localScale = scale;
+            if(isTargetBubble)
+            {
+                bubbleGo.tag = "TargetBubble";
+            }
+
             var bubbleElement = bubbleGo.GetComponent<BubbleElement>();
             var colorIndex = UnityEngine.Random.Range(0, Enum.GetNames(typeof(BubbleColor)).Length);
             bubbleElement.SetSprite(_bubbleSprites[colorIndex]);
             _controlledBubbles.Add(bubbleElement);
+            bubbleElement.OnBubbleArrived += _OnShootingBubbleArrived;
             return bubbleElement;
         }
 
         private void Update()
         {
-            if((Input.GetKeyDown(KeyCode.Space))&& !isGameFinished)
+            if((Input.GetKeyDown(KeyCode.Space))&& !_isGameFinished)
             {
                 _currentBubble.GetComponent<Rigidbody>().isKinematic = false;
                 _currentBubble.IsMoving = true;
-                _currentBubble.SetShootingBubbleStatus(_GetShootingAngle(), 5f);
-                _nextBubble.transform.position = _currentBubble.transform.position;
-                _nextBubble.transform.localScale = CURRENT_BUBBLE_SCALE;
-                _currentBubble = _nextBubble;
-                _nextBubble = _CreateBubble(_nextBubbleRoot, CURRENT_BUBBLE_SCALE);
+                _currentBubble.SetShootingBubbleStatus(_GetShootingAngle(), 20f);
             }
+        }
+
+        private void _OnShootingBubbleArrived()
+        {
+            _nextBubble.transform.position = _currentBubbleRoot.transform.position;
+            _nextBubble.transform.Translate(Vector3.forward * _gameManager.GetBubbleMatrixGeoInfo().Depth);
+            _nextBubble.transform.localScale = CURRENT_BUBBLE_SCALE;
+            _currentBubble = _nextBubble;
+            _nextBubble = _CreateBubble(_nextBubbleRoot, NEXT_BUBBLE_SCALE,false);
         }
 
         public void AddNewRowToMatrix()
@@ -94,7 +106,7 @@ namespace Hanswu.bubble
 			
 			for (int i = 0; i<this._geoInfo.Columns; i++)
             {
-				BubbleElement bubble = _CreateBubble(_bubbleContainer.transform,CURRENT_BUBBLE_SCALE);
+				BubbleElement bubble = _CreateBubble(_bubbleContainer.transform,CURRENT_BUBBLE_SCALE,true);
                 bubble.IsMoving = false;
 				_gameManager.GetBubbleMatrix().AddBubble(bubble, 0,i);
 			}
