@@ -42,7 +42,7 @@ namespace Hanswu.bubble
 
         public List<BubbleElement> SearchBubbleNeighbor(BubbleElement bubble,int targetColorIndex)
         {
-            if()
+            return null;
 
         }
 
