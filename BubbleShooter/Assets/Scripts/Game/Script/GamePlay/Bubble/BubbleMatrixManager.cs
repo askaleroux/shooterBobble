@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ namespace Hanswu.bubble
         private BubbleMatrixGeoInfo _geoInfo;
         private BubbleMatrix _matrix;
         private Difficulty _diffculty;
+        private List<BubbleElement> _list = new List<BubbleElement>();
 
         public static BubbleMatrixManager GetInstance(int rows,int columns,BubbleMatrixGeoInfo geoInfo,Difficulty difficulty)
         {
@@ -38,19 +40,15 @@ namespace Hanswu.bubble
             return _geoInfo;
         }
 
-        public void HandleBubbleCollision(GameObject gameObject)
+        public List<BubbleElement> SearchBubbleNeighbor(BubbleElement bubble,int targetColorIndex)
         {
+            if()
 
         }
 
-        public bool CanBubbleMoveToPosition(Vector3 position)
+        private void _collectBubble()
         {
-            Vector2 location = GetCellCoordFromPosition(position);
-            if ((int)location.x <= _geoInfo.Rows - 1)
-            {
-                return _matrix.HasBubble((int)location.x, (int)location.y);
-            }
-            return true;
+
         }
 
         public Vector3 GetPositionFromCellCoord(Vector2 cell)
@@ -67,6 +65,24 @@ namespace Hanswu.bubble
             }
 
             return new Vector3(x, y, _geoInfo.Depth);
+        }
+
+        public Vector3 AdjustPosition(BubbleElement bubble, Vector3 position)
+        {
+            var y = Convert.ToInt32(Mathf.Floor((position.x - _geoInfo.LeftBorder) / (2 * _geoInfo.BubbleRadius)));
+            var x = Convert.ToInt32(Mathf.Floor(_geoInfo.TopBorder - position.y) / (1.8 * _geoInfo.BubbleRadius));
+
+            _matrix.AddBubble(bubble, x, y); 
+
+            float newPosY = (float)(_geoInfo.TopBorder - x * _geoInfo.BubbleRadius * 1.8);
+            float newPostX = _geoInfo.LeftBorder + y * _geoInfo.BubbleRadius * 2;
+
+            return new Vector3(newPostX, newPosY, _geoInfo.Depth);
+        }
+
+        private void _DetectDestroy()
+        {
+
         }
 
         public Vector2 GetCellCoordFromPosition(Vector3 position)

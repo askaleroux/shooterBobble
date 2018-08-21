@@ -39,7 +39,7 @@ namespace Hanswu.bubble
         private bool _isGameFinished = false;
         private bool _isShootingBubbleArrived = false;
 
-        private int _rows = 4;
+        private int _rows = 8;
         private int _columns = 8;
 
         private float _leftBorder = -2.04f;
@@ -57,7 +57,7 @@ namespace Hanswu.bubble
             _currentBubble = _CreateBubble(_currentBubbleRoot, CURRENT_BUBBLE_SCALE,false);
             _nextBubble = _CreateBubble(_nextBubbleRoot,NEXT_BUBBLE_SCALE,false);
 
-            for(int i =0;i<_rows;++i)
+            for(int i =0;i<4;++i)
             {
                 AddNewRowToMatrix();
             }
@@ -76,6 +76,7 @@ namespace Hanswu.bubble
             var bubbleElement = bubbleGo.GetComponent<BubbleElement>();
             var colorIndex = UnityEngine.Random.Range(0, Enum.GetNames(typeof(BubbleColor)).Length);
             bubbleElement.SetSprite(_bubbleSprites[colorIndex]);
+            bubbleElement.ColorIndex = colorIndex;
             _controlledBubbles.Add(bubbleElement);
             bubbleElement.OnBubbleArrived += _OnShootingBubbleArrived;
             return bubbleElement;
@@ -91,13 +92,16 @@ namespace Hanswu.bubble
             }
         }
 
-        private void _OnShootingBubbleArrived()
+        private Vector3 _OnShootingBubbleArrived(BubbleElement arrivedBubble)
         {
+            arrivedBubble.transform.SetParent(_bubbleContainer.transform);
+            arrivedBubble.transform.SetAsLastSibling();
             _nextBubble.transform.position = _currentBubbleRoot.transform.position;
             _nextBubble.transform.Translate(Vector3.forward * _gameManager.GetBubbleMatrixGeoInfo().Depth);
             _nextBubble.transform.localScale = CURRENT_BUBBLE_SCALE;
             _currentBubble = _nextBubble;
             _nextBubble = _CreateBubble(_nextBubbleRoot, NEXT_BUBBLE_SCALE,false);
+            return _gameManager.AdjustPosition(arrivedBubble, arrivedBubble.transform.localPosition);
         }
 
         public void AddNewRowToMatrix()
@@ -142,16 +146,6 @@ namespace Hanswu.bubble
             }
 
             return ballRotation;
-        }
-
-        private bool _CanMoveToPosition(Vector3 position)
-        {
-            Vector2 location = _gameManager.GetCellCoordFromPosition(position);
-            if ((int)location.x <= _geoInfo.Rows - 1)
-            {
-                return !_gameManager.GetBubbleMatrix().HasBubble((int)location.x, (int)location.y);
-            }
-            return true;
         }
 
     }

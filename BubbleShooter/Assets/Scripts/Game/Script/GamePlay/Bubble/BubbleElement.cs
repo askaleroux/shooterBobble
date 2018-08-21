@@ -20,11 +20,12 @@ namespace Hanswu.bubble
     public class BubbleElement : MonoBehaviour
     {
         public event Action<GameObject> OnCollisionStart;
-        public event Action OnBubbleArrived;
+        public event Func<BubbleElement,Vector3> OnBubbleArrived;
 
         [SerializeField]
         SpriteRenderer _bubbleSprite;
 
+        public int ColorIndex;
         public bool IsMoving;
         private float _movingSpeed;
         private float _headingAngle;
@@ -52,8 +53,9 @@ namespace Hanswu.bubble
             {
                 var rigobody = this.GetComponent<Rigidbody>();
                 rigobody.velocity = Vector3.zero;
-                OnBubbleArrived();
+                OnBubbleArrived(this);
                 IsMoving = false;
+                rigobody.isKinematic = true;
                 gameObject.tag = "TargetBubble";
             }
         }
@@ -71,6 +73,12 @@ namespace Hanswu.bubble
             }
         }
 
+        public void DestoryBubble()
+        {
+            this.gameObject.SetActive(false);
+            Destroy(this);
+        }
+
         public void SetSprite(Sprite sprite)
         {
             _bubbleSprite.sprite = sprite;
@@ -80,36 +88,6 @@ namespace Hanswu.bubble
         {
             _headingAngle = angle;
             _movingSpeed = speed;
-        }
-
-        private void _UpdateDirection()
-        {
-
-            /*TODO: Piority Medium
-			 * Warning, since we are updating after moving, there is a chance that 
-			 * we could fall outside of the border if there was not sufficent time between 
-			 * two clock ticks. Improvement: Move only until the border coordinate max, and if there is an excess,
-			 * move the excess in the opposite direction 
-			 * 
-			 */
-
-            //if (this.transform.position.x + this.radius >= this.rightBorder || this.transform.position.x - this.radius <= this.leftBorder)
-            //{
-            //    this.angle = 180.0f - this.angle;
-            //    if (this.transform.position.x + this.radius >= this.rightBorder)
-            //        this.transform.position = new Vector3(this.rightBorder - this.radius, this.transform.position.y, this.transform.position.z);
-            //    if (this.transform.position.x - this.radius <= this.leftBorder)
-            //        this.transform.position = new Vector3(this.leftBorder + this.radius, this.transform.position.y, this.transform.position.z);
-            //}
-
-            //if (this.transform.position.y + this.radius >= this.topBorder)
-            //{
-            //    this.isMoving = false;
-            //    if (collisionDelegate != null)
-            //    {
-            //        collisionDelegate(this.gameObject);
-            //    }
-            //}
         }
     }
 }
