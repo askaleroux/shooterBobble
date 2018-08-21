@@ -38,8 +38,18 @@ namespace Hanswu.bubble
             return _geoInfo;
         }
 
-        public static bool CanBubbleMoveToPosition(Vector3 position)
+        public void HandleBubbleCollision(GameObject gameObject)
         {
+
+        }
+
+        public bool CanBubbleMoveToPosition(Vector3 position)
+        {
+            Vector2 location = GetCellCoordFromPosition(position);
+            if ((int)location.x <= _geoInfo.Rows - 1)
+            {
+                return _matrix.HasBubble((int)location.x, (int)location.y);
+            }
             return true;
         }
 

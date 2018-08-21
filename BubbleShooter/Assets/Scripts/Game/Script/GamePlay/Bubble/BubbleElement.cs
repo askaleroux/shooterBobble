@@ -19,7 +19,7 @@ namespace Hanswu.bubble
 
     public class BubbleElement : MonoBehaviour
     {
-        public event Action OnDetectMotionStop;
+        public event Func<Vector3,bool> OnDetectMotionStop;
         public event Action<GameObject> OnCollisionStart;
 
         [SerializeField]
@@ -52,23 +52,23 @@ namespace Hanswu.bubble
             {
                 this.transform.Translate(Vector3.right * this._movingSpeed * Mathf.Cos(Mathf.Deg2Rad * _headingAngle) * Time.deltaTime);
                 this.transform.Translate(Vector3.up * this._movingSpeed * Mathf.Sin(Mathf.Deg2Rad * _headingAngle) * Time.deltaTime);
-                //if (this.motionDelegate != null)
-                //{
-                //    if (!this.motionDelegate(this.transform.position))
-                //    {
-                //        this.transform.Translate(Vector3.left * _movingSpeed * Mathf.Cos(Mathf.Deg2Rad * _headingAngle) * Time.deltaTime);
-                //        this.transform.Translate(Vector3.down * _movingSpeed * Mathf.Sin(Mathf.Deg2Rad * _headingAngle) * Time.deltaTime);
-                //        this.IsMoving = false;
-                //        if (collisionDelegate != null)
-                //        {
-                //            collisionDelegate(this.gameObject);
-                //        }
-                //    }
-                //    else
-                //    {
-                //        _UpdateDirection();
-                //    }
-                //}
+                if (OnDetectMotionStop != null)
+                {
+                    if(!OnDetectMotionStop(transform.position))
+                    {
+                        transform.Translate(Vector3.left * _movingSpeed * Mathf.Cos(Mathf.Deg2Rad * _headingAngle) * Time.deltaTime);
+                        transform.Translate(Vector3.down * _movingSpeed * Mathf.Sin(Mathf.Deg2Rad * _headingAngle) * Time.deltaTime);
+                        IsMoving = false;
+                        if(OnCollisionStart!=null)
+                        {
+                            OnCollisionStart(gameObject);
+                        }
+                    }
+                    else
+                    {
+                        _UpdateDirection();
+                    }
+                }
             }
         }
 
